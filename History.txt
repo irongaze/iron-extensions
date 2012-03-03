@@ -4,6 +4,7 @@
 * Added spec coverage for Kernel extensions
 * Added spec coverage for Numeric extensions
 * Added spec coverage for Symbol extensions
+* Commit to GitHub, update gem homepage to reflect same
 
 == 1.0.0 / 2012-03-02
 

@@ -78,7 +78,7 @@ class String
     s.gsub!(/\'/,'')    # remove ' from rob's, so we don't get rob_s_blog
     s.gsub!(/\W+/, ' ') # all non-word chars to spaces
     s.gsub!('_',' ')    # we don't like underscores
-    s.strip!            # ohh la la
+    s.strip!            # ooh la la
     s.downcase!         #
     s.gsub!(/\ +/, '-') # spaces to dashes, preferred separator char everywhere
     s
@@ -153,7 +153,7 @@ class String
 
   # In case we're running in Rails, which defines this already...
   unless ''.respond_to?(:constantize)
-    def constantize()
+    def constantize
       names = self.split('::')
       names.shift if names.empty? || names.first.empty?
 

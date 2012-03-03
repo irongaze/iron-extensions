@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.name        = "iron-extensions"
   s.summary     = "Extensions to core classes"
   s.description = "Adds common extensions to core Ruby classes"
+  s.homepage    = "https://github.com/irongaze/iron-extensions"
 
   # Post-install message
   # s.post_install_message = "Thanks for installing!"
@@ -30,7 +31,6 @@ Gem::Specification.new do |s|
   s.version     = File.read('Version.txt').strip
   s.authors     = ["Rob Morris"]
   s.email       = ["rob@irongaze.com"]
-  s.homepage    = "http://irongaze.com"
   
   # Boilerplate
   s.platform    = Gem::Platform::RUBY

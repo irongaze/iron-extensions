@@ -15,6 +15,11 @@ def latest
   File.basename(latest)  
 end
 
+def version
+  raise "Missing Version.txt file!" unless File.exist?('Version.txt')
+  File.read('Version.txt').strip
+end
+
 desc 'Build gem'
 task :build => [:test] do
   Dir['*.gem'].each {|p| File.unlink(p) }
@@ -43,9 +48,28 @@ task :test do
 end
 
 desc 'Deploy to rubygems.org'
-task :deploy => [:build] do
+task :deploy => [:ready, :build] do
   puts ""
   puts "Deploying #{latest}"
   puts "--------------------"
+  
+  # Tag it in the github repo
+  puts `git tag --force -am "tag v#{version}" v#{version}`
+  puts `git push --tags origin`
+  
+  # Update it on rubygems.org
   puts `gem push #{latest}`
+  
+  # Update minor version automatically
+  new_version = version.gsub(/([0-9]+)$/) {|minor| minor.to_i + 1}
+  `echo #{new_version} > Version.txt`
+end
+
+desc 'Make sure we have all changes checked into the GitHub repo'
+task :ready do
+  res = `git status --porcelain`
+  unless res.strip.empty?
+    puts "\nGit reports changes - not ready for deployment!\n\n"
+    exit
+  end
 end
