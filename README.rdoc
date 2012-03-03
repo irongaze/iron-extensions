@@ -1,0 +1,101 @@
+= GEM: iron-extensions
+
+Written by Rob Morris @ Irongaze Consulting LLC (http://irongaze.com)
+
+== DESCRIPTION
+
+Helpful extensions to core Ruby classes
+
+== ADDED EXTENSIONS
+
+* Array#rand / Array#rand! - pull n random items from the array
+
+    [1,2,3,4,5].rand(2) # => [2, 5]
+
+* Array#shuffle / Array#shuffle! - randomly reorder the array
+
+    [1,2,3,4,5].shuffle # => [2,4,1,5,3]
+    
+* Array#list_join - join as a list, ignoring blank/nil entries
+
+    [1, 2, nil, '', 'count'].list_join # => '1, 2, count'
+    
+* Enumerable#to_hash - convert an array or other enumerable to a hash using a block or constant
+
+    [:frog, :pig].to_hash {|n| n.to_s.capitalize} # => {:frog => 'Frog', :pig => 'Pig'}
+    [:frog, :pig].to_hash(nil) # => {:frog => nil, :pig => nil}
+    
+* File.replace - atomic replacement of a file given a block to generate it
+
+    # Defers deleting old file until block completes successfully (ie no exceptions), then
+    # moves the new file into the old file's location
+    File.replace('./config') do |file|
+      file.write("PRODUCTION: true")
+    end
+    
+* Fixnum#blank? - always false
+* Fixnum#to_human_size - size to MB/GB/whatever, lifted from Rails
+
+    123456.to_human_size # => "120.5 KB"
+
+* Kernel#capture_stdout - capture all text sent to STDOUT within the passed block
+
+    # Will result in out == 'Hi mom!\n'
+    out = capture_stdout do 
+      puts 'Hi mom!'
+    end
+
+* Math.max/Math.min - find the max/min value passed
+
+    Math.max(2,10) # => 10
+    
+* Math.scale_to_fit - shrink width and height vals to fit in a box, preserving aspect ratio
+
+    Math.scale_to_fit(100, 100, 50, 80) # => 50, 50
+    
+* Nil#blank? - always true
+
+* Numeric#bound - bound a given number to a range
+
+    4.bound(5,10) # => 4
+
+* Object#in? - sugar to make expressing inclusion clearer
+
+    1.in? [2,3,4] # => false
+    'foo'.in? ['foo', 'bar'] # => true
+
+* Range#bound - ensure a number is in a range
+
+    (1..5).bound(6) # => 5
+
+* Regexp::IP_ADDRESS, Regexp::EMAIL_ADDRESS, Regexp::DOMAIN - commonly useful regexen
+
+* String#blank? - true if empty?
+* String#append / String#prepend - this should be in Ruby core
+* String#to_date - "better" date parser than Date.parse
+* String#to_dashcase - perfect for permalinks!
+* String#smart_truncate - truncate honoring word boundaries
+* String#integer? - true when string represents an integer
+* String#extract - simplifies pulling info out of strings using regexen
+
+    "Irongaze Consulting".extract(/^[a-z]/i) # => "Irongaze"
+    dollars, cents = "$12.95".extract(/([0-9]+)\.([0-9]+)/) # => dollars == '12' and cents == '95'
+
+* Symbol#blank? - always false
+* Symbol#to_dashcase - same as for String
+
+== SYNOPSIS
+
+To use:
+
+    require 'iron/extensions'
+
+== REQUIREMENTS
+
+* None
+
+== INSTALL
+
+To install, simply run:
+
+    sudo gem install iron-extensions

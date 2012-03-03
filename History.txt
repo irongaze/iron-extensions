@@ -1,0 +1,13 @@
+== 1.0.1 / 2012-03-03
+
+* Updated docs, fixed up minor packaging issues
+* Added spec coverage for Kernel extensions
+* Added spec coverage for Numeric extensions
+* Added spec coverage for Symbol extensions
+
+== 1.0.0 / 2012-03-02
+
+* Broke out extensions from older irongaze gem
+* Vastly improved README with listing of extensions added
+* Improved spec coverage
+* Integrated several new extensions
