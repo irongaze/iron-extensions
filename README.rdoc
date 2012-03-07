@@ -57,7 +57,7 @@ Helpful extensions to core Ruby classes
 
 * Numeric#bound - bound a given number to a range
 
-    4.bound(5,10) # => 4
+    4.bound(5,10) # => 5
 
 * Object#in? - sugar to make expressing inclusion clearer
 
@@ -84,15 +84,33 @@ Helpful extensions to core Ruby classes
 * Symbol#blank? - always false
 * Symbol#to_dashcase - same as for String
 
+== ADDED CLASSES/MODULES
+
+* DslProxy - a cool and sexy way to make powerful DSLs (domain-specific languages) look easy - see the docs for details
+
+    # DslProxy makes this code possible:
+    @items = ['one', 'two']
+    Console.out do
+      # No explicit receiver for DSL method calls
+      p 'Item List'
+      hr
+      indent do
+        # Even nested, local variables are still available
+        @items.each {|item| p item }
+      end
+    end
+
 == SYNOPSIS
 
 To use:
 
     require 'iron/extensions'
+    
+After that, simply write code to make use of the new extensions and helper classes.
 
 == REQUIREMENTS
 
-* None
+* Ruby 1.9.2 or later
 
 == INSTALL
 
