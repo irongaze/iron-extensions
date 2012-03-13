@@ -74,6 +74,25 @@ describe DslProxy do
     end
   end
   
+  it 'should proxy correctly even when nested' do
+    def outerfunc
+      5
+    end
+    @instance_var = nil
+    local_var = nil
+    DslProxy.exec(self) do
+      DslProxy.exec(Object.new) do
+        outerfunc.should == 5
+        @instance_var.should be_nil
+        local_var.should be_nil
+        @instance_var = 10
+        local_var = 11
+      end
+    end
+    @instance_var.should == 10
+    local_var.should == 11
+  end
+  
   it 'should put it all together' do
     @knob_count = 5
     controls = ControlBuilder.define do

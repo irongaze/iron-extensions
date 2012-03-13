@@ -4,7 +4,7 @@ Written by Rob Morris @ Irongaze Consulting LLC (http://irongaze.com)
 
 == DESCRIPTION
 
-Helpful extensions to core Ruby classes
+Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 
 == ADDED EXTENSIONS
 
@@ -20,6 +20,19 @@ Helpful extensions to core Ruby classes
 
     [1, 2, nil, '', 'count'].list_join # => '1, 2, count'
     
+* Class#dsl_accessor - helpful method for defining accessors on DSL builder-style classes
+
+    class MyBuilder
+      dsl_accessor :name
+    end
+    builder = MyBuilder.new
+    builder.name 'ProjectX'
+    builder.name  # => 'ProjectX'
+    DslProxy.exec(builder) do
+      name 'Project Omega'
+    end
+    builder.name  # => 'Project Omega'
+
 * Enumerable#to_hash - convert an array or other enumerable to a hash using a block or constant
 
     [:frog, :pig].to_hash {|n| n.to_s.capitalize} # => {:frog => 'Frog', :pig => 'Pig'}
@@ -117,3 +130,7 @@ After that, simply write code to make use of the new extensions and helper class
 To install, simply run:
 
     sudo gem install iron-extensions
+
+RVM users should drop the 'sudo':
+
+    gem install iron-extensions

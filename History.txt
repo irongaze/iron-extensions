@@ -1,3 +1,10 @@
+== 1.1.1 / 2012-03-13
+
+* Added DslBuilder base class for additional DSL-building goodness, is basically a better blank-slate starter class than BasicObject for working with our DslProxy class
+* Added dsl_accessor class method as a way to easily create DSL-style accessors
+* DslProxy now only copies back instance vars when they change
+* Symbol now supports #starts_with? and #ends_with?
+
 == 1.1.0 / 2012-03-06
 
 * Added DslProxy class and specs, which enables slim and sexy DSL construction

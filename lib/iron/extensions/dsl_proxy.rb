@@ -1,7 +1,7 @@
 # Specialty helper class for building elegant DSLs (domain-specific languages)
 # The purpose of the class is to allow seamless DSL's by allowing execution
 # of blocks with the instance variables of the calling context preserved, but
-# all method calls be proxied to a given receiver.  This sounds pretty abstract,
+# all method calls proxied to a given receiver.  This sounds pretty abstract,
 # so here's an example:
 # 
 #   class ControlBuilder
@@ -26,19 +26,19 @@
 #   end
 #
 # Notice the lack of explicit builder receiver to the calls to #switch, #knob and #button.
-# Those calls are automatically proxied to the @builder we passed to the DslProxy.
+# Those calls are automatically proxied to the receiver we passed to the DslProxy.
 #
 # In quick and dirty DSLs, like Rails' migrations, you end up with a lot of
 # pointless receiver declarations for each method call, like so:
 #
-# def change
-#   create_table do |t|
-#     t.integer :counter
-#     t.text :title
-#     t.text :desc
-#     # ... tired of typing "t." yet? ...
+#   def change
+#     create_table do |t|
+#       t.integer :counter
+#       t.text :title
+#       t.text :desc
+#       # ... tired of typing "t." yet? ...
+#     end
 #   end
-# end
 #
 # This is not a big deal if you're using a simple DSL, but when you have multiple nested
 # builders going on at once, it is ugly, pointless, and can cause bugs when
@@ -60,52 +60,116 @@ class DslProxy < BasicObject
   # block, and off you go.  The passed block will be executed with all
   # block-context local and instance variables available, but with all
   # method calls sent to the receiver you pass in.  The block's result will
-  # be returned.  If the receiver doesn't
+  # be returned.  
+  #
+  # If the receiver doesn't respond_to? a method, any missing methods
+  # will be proxied to the enclosing context.
   def self.exec(receiver, &block) # :yields: receiver
-    proxy = DslProxy.new(receiver, &block)
-    return proxy._result
+    # Find the context within which the block was defined
+    context = ::Kernel.eval('self', block.binding)
+
+    # Create or re-use our proxy object
+    if context.respond_to?(:_to_dsl_proxy)
+      # If we're nested, we don't want/need a new dsl proxy, just re-use the existing one
+      proxy = context._to_dsl_proxy
+    else
+      # Not nested, create a new proxy for our use
+      proxy = DslProxy.new(context)
+    end
+
+    # Exec the block and return the result
+    proxy._proxy(receiver, &block)
   end
   
-  # Create a new proxy and execute the passed block
-  def initialize(builder, &block) # :yields: receiver
-    # Save the dsl target as our receiver for proxying
-    @_receiver = builder
-
-    # Find the context within which the block was defined
-    @_context = ::Kernel.eval('self', block.binding)
-    # Run each instance variable, and set it to ourselves so we can proxy it
-    @_context.instance_variables.each do |var|
-      value = @_context.instance_variable_get(var.to_s)
-      instance_eval "#{var} = value"
-    end
+  # Simple state setup
+  def initialize(context)
+    @_receivers = []
+    @_instance_original_values = {}
+    @_context = context
+  end
+  
+  def _proxy(receiver, &block) # :yields: receiver
+    # Sanity!
+    raise 'Cannot proxy with a DslProxy as receiver!' if receiver.respond_to?(:_to_dsl_proxy)
     
+    if @_receivers.empty?
+      # On first proxy call, run each context instance variable, 
+      # and set it to ourselves so we can proxy it
+      @_context.instance_variables.each do |var|
+        unless var.starts_with?('@_')
+          value = @_context.instance_variable_get(var.to_s)
+          @_instance_original_values[var] = value
+          #instance_variable_set(var, value)
+          instance_eval "#{var} = value"
+        end
+      end
+    end
+
+    # Save the dsl target as our receiver for proxying
+    _push_receiver(receiver)
+
     # Run the block with ourselves as the new "self", passing the receiver in case
     # the code wants to disambiguate for some reason
-    @_result = instance_exec(@_receiver, &block)
+    result = instance_exec(@_receivers.last, &block)
     
-    # Run each instance variable, and set it to ourselves so we can proxy it
-    @_context.instance_variables.each do |var|
-      @_context.instance_variable_set(var.to_s, instance_eval("#{var}"))
+    # Pop the last receiver off the stack
+    _pop_receiver
+    
+    if @_receivers.empty?
+      # Run each local instance variable and re-set it back to the context if it has changed during execution
+      #instance_variables.each do |var|
+      @_context.instance_variables.each do |var|
+        unless var.starts_with?('@_')
+          value = instance_eval("#{var}")
+          #value = instance_variable_get("#{var}")
+          if @_instance_original_values[var] != value
+            @_context.instance_variable_set(var.to_s, value)
+          end
+        end
+      end
     end
+    
+    return result
   end
   
-  # Returns value of the exec'd block
-  def _result
-    @_result
+  # For nesting multiple proxies
+  def _to_dsl_proxy
+    self
+  end
+  
+  # Set the currently active receiver
+  def _push_receiver(receiver)
+    @_receivers.push receiver
+  end
+  
+  # Remove the currently active receiver, restore old receiver if nested
+  def _pop_receiver
+    @_receivers.pop
   end
 
   # Proxies all calls to our receiver, or to the block's context
   # if the receiver doesn't respond_to? it.
   def method_missing(method, *args, &block)
-    if @_receiver.respond_to?(method)
-      @_receiver.send(method, *args, &block)
+    #$stderr.puts "Method missing: #{method}"
+    if @_receivers.last.respond_to?(method)
+      #$stderr.puts "Proxy [#{method}] to receiver"
+      @_receivers.last.__send__(method, *args, &block)
     else
-      @_context.send(method, *args, &block)
+      #$stderr.puts "Proxy [#{method}] to context"
+      @_context.__send__(method, *args, &block)
     end
   end
   
-  # Proxies searching for constants to the context
+  # Let anyone who's interested know what our proxied objects will accept
+  def respond_to?(method, include_private = false)
+    return true if method == :_to_dsl_proxy
+    @_receivers.last.respond_to?(method, include_private) || @_context.respond_to?(method, include_private)
+  end
+  
+  # Proxies searching for constants to the context, so that eg Kernel::foo can actually
+  # find Kernel - BasicObject does not partake in the global scope!
   def self.const_missing(name)
+    #$stderr.puts "Constant missing: #{name} - proxy to context"
     @_context.class.const_get(name)
   end
   
