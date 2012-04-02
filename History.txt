@@ -1,3 +1,7 @@
+== 1.1.2 / 2012-03-30
+
+* Rename Enumerable#to_hash to #convert_to_hash to resolve ActiveRecord conflict
+
 == 1.1.1 / 2012-03-13
 
 * Added DslBuilder base class for additional DSL-building goodness, is basically a better blank-slate starter class than BasicObject for working with our DslProxy class

@@ -28,8 +28,4 @@ class Numeric
     res
   end
   
-  #def to_currency
-  #  Currency::parse(self)
-  #end
-
 end
