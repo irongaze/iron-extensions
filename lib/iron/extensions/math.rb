@@ -1,5 +1,5 @@
-
 module Math
+  
   def self.min(a,b)
     a <= b ? a : b
   end

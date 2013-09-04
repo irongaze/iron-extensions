@@ -15,7 +15,7 @@ class String
     self.insert(-1, str.to_s)
   end
 
-  # Date.parse sucks hard (assumes EU formatting, for one, does the wrong thing with 2 digit dates for two... etc.)
+  # Date.parse sucks hard (assumes EU formatting, for one, does the wrong thing with 2 digit years for two... etc.)
   # so we have this here as our personal, bona-fide date parsing helper.
   def to_date
     us_format = /^([0-9]{1,2})[-\/\.]([0-9]{1,2})[-\/\.]([0-9]+)$/        # US standard MM/DD/YYYY, allowing for 2 digit year
@@ -75,7 +75,7 @@ class String
   # To a permalink-style string rep, removing all non-word characters and dasherizing all spaces
   def to_dashcase
     s = self.dup
-    s.gsub!(/\'/,'')    # remove ' from rob's, so we don't get rob_s_blog
+    s.gsub!(/\'/,'')    # remove ' from rob's, so we don't get rob-s-blog
     s.gsub!(/\W+/, ' ') # all non-word chars to spaces
     s.gsub!('_',' ')    # we don't like underscores
     s.strip!            # ooh la la
@@ -85,24 +85,8 @@ class String
   end
   alias_method :to_permalink, :to_dashcase
 
-#  def to_phone
-#    raw, suffix = self.strip.extract(/([0-9\(\)\- \.,]+)(.*)/)
-#    raw.gsub!(/[^0-9\+\,]+/,'')
-#    raw.gsub!(/^\+?1/, '')
-#    raw, pause = raw.extract(/([0-9]+)(.*)/)
-#    count = raw.length
-#    if count == 7 || count == 10
-#      area, first, last = raw.extract(/([0-9]{3})?([0-9]{3})([0-9]{4})/)
-#      area ||= Settings[:site][:phone].default_area_code || '919'
-#      suffix = ' ' + suffix unless suffix.blank?
-#      pattern = Settings[:site][:phone].format || '(area) first-last'
-#      res = pattern.sub('area', area).sub('first', first).sub('last', last) + pause + suffix
-#      return res
-#    else
-#      return self
-#    end
-#  end
-
+  # Truncate a string to no more than len characters, honoring
+  # word boundaries (whitespace and - character)
   def smart_truncate(len = 30, ending = '...')
     len = Math.max(len, 5)
     return self if self.length <= len
@@ -112,7 +96,7 @@ class String
     s.reverse + ending
   end
 
-  # Returns an array that can be compared (eg via <=>) with another string's natural order
+  # Returns an array that can be compared (eg via Array#sort) with another string's natural order
   # to implement natural order sorting ("Bob123" => ['BOB', 123])
   def natural_order(nocase=true)
     i = true

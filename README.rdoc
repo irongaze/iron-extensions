@@ -8,14 +8,6 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 
 == ADDED EXTENSIONS
 
-* Array#rand / Array#rand! - pull n random items from the array
-
-    [1,2,3,4,5].rand(2) # => [2, 5]
-
-* Array#shuffle / Array#shuffle! - randomly reorder the array
-
-    [1,2,3,4,5].shuffle # => [2,4,1,5,3]
-    
 * Array#list_join - join as a list, ignoring blank/nil entries
 
     [1, 2, nil, '', 'count'].list_join # => '1, 2, count'
@@ -32,6 +24,17 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
       name 'Project Omega'
     end
     builder.name  # => 'Project Omega'
+    
+* Class#dsl_flag - same as above, but designed for boolean values
+
+    class AnotherBuilder
+      dsl_flag :awesome
+    end
+    
+    builder = AnotherBuilder
+    builder.awesome?  # => false on uninitialized value
+    builder.awesome!  # => sets @awesome to true
+    builder.awesome true  # ditto, same style as dsl_accessor above
 
 * Enumerable#to_hash - convert an array or other enumerable to a hash using a block or constant
 
@@ -47,7 +50,7 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
     end
     
 * Fixnum#blank? - always false
-* Fixnum#to_human_size - size to MB/GB/whatever, lifted from Rails
+* Fixnum#to_human_size - size to MB/GB/whatever, adapted from Rails
 
     123456.to_human_size # => "120.5 KB"
 
@@ -68,6 +71,12 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
     
 * Nil#blank? - always true
 
+* Numeric#to_display - pretty display of numbers with options for number of decimal places and inclusion of thousands separator
+
+    5000.to_display          # => 5,000
+    100.to_display(2)        # => 100.00
+    2105.2348.to_display(2)  # => 2,105.23
+    
 * Numeric#bound - bound a given number to a range
 
     4.bound(5,10) # => 5
@@ -134,3 +143,7 @@ To install, simply run:
 RVM users should drop the 'sudo':
 
     gem install iron-extensions
+    
+Then simply require the library:
+
+    require 'iron/extensions'

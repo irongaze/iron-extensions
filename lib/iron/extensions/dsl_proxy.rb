@@ -64,7 +64,7 @@ class DslProxy < BasicObject
   #
   # If the receiver doesn't respond_to? a method, any missing methods
   # will be proxied to the enclosing context.
-  def self.exec(receiver, &block) # :yields: receiver
+  def self.exec(receiver, *to_yield, &block) # :yields: receiver
     # Find the context within which the block was defined
     context = ::Kernel.eval('self', block.binding)
 
@@ -78,7 +78,7 @@ class DslProxy < BasicObject
     end
 
     # Exec the block and return the result
-    proxy._proxy(receiver, &block)
+    proxy._proxy(receiver, *to_yield, &block)
   end
   
   # Simple state setup
@@ -88,7 +88,7 @@ class DslProxy < BasicObject
     @_context = context
   end
   
-  def _proxy(receiver, &block) # :yields: receiver
+  def _proxy(receiver, *to_yield, &block) # :yields: receiver
     # Sanity!
     raise 'Cannot proxy with a DslProxy as receiver!' if receiver.respond_to?(:_to_dsl_proxy)
     
@@ -99,7 +99,6 @@ class DslProxy < BasicObject
         unless var.starts_with?('@_')
           value = @_context.instance_variable_get(var.to_s)
           @_instance_original_values[var] = value
-          #instance_variable_set(var, value)
           instance_eval "#{var} = value"
         end
       end
@@ -108,9 +107,11 @@ class DslProxy < BasicObject
     # Save the dsl target as our receiver for proxying
     _push_receiver(receiver)
 
-    # Run the block with ourselves as the new "self", passing the receiver in case
-    # the code wants to disambiguate for some reason
-    result = instance_exec(@_receivers.last, &block)
+    # Run the block with ourselves as the new "self", passing the given yieldable(s) or
+    # the receiver in case the code wants to disambiguate for some reason
+    to_yield = [receiver] if to_yield.empty?
+    to_yield = to_yield.first(block.arity)
+    result = instance_exec(*to_yield, &block)
     
     # Pop the last receiver off the stack
     _pop_receiver
@@ -121,7 +122,6 @@ class DslProxy < BasicObject
       @_context.instance_variables.each do |var|
         unless var.starts_with?('@_')
           value = instance_eval("#{var}")
-          #value = instance_variable_get("#{var}")
           if @_instance_original_values[var] != value
             @_context.instance_variable_set(var.to_s, value)
           end

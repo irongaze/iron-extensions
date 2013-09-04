@@ -45,7 +45,7 @@ describe DslProxy do
     @foo.should == 'no bar!'
   end
   
-  it 'should proxy missing methods on the receiver to the context' do
+  it 'should proxy missing methods on the receiver to the calling context' do
     class TestContext
       def bar
         'something'
@@ -91,6 +91,11 @@ describe DslProxy do
     end
     @instance_var.should == 10
     local_var.should == 11
+  end
+  
+  it 'should pass additional args to block as argument' do
+    l = lambda {|arg1, arg2| arg1 + arg2}
+    DslProxy.exec(Object.new, 5, 1, &l).should == 6
   end
   
   it 'should put it all together' do

@@ -6,7 +6,7 @@ describe Numeric do
     12345.to_display.should == '12,345'
     123450000066666234234.should be_an_instance_of(Bignum)
     123450000066666234234.to_display.should == '123,450,000,066,666,234,234'
-    0.0004.to_display
+    0.0004.to_display.should == '0.0004'
   end
   
   it 'should display correctly when negative' do
