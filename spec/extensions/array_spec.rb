@@ -1,10 +1,10 @@
 describe Array do
   
   it 'should join lists ignoring blank entries' do
-    ['word', nil, '', 'end'].list_join('-').should == 'word-end'
+    ['word', nil, '', 'end', ''].list_join('-').should == 'word-end'
   end
   
-  it 'should handle empty arrays while joining lists' do
+  it 'should handle empty arrays while joining as a list' do
     [].list_join.should == ''
   end
   

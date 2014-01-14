@@ -1,5 +1,5 @@
-
 class Range
+
   def bound(arg)
     if arg < min
       return min
@@ -9,5 +9,6 @@ class Range
       return arg
     end
   end
+
 end
 

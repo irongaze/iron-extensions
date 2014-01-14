@@ -23,10 +23,10 @@ describe DslProxy do
   end
   
   it 'should proxy respond_to? to the receiver' do
-    receiver = Object.new
+    receiver = ControlBuilder.new
     DslProxy.exec(receiver) do
       respond_to?(:garbaz).should == false
-      respond_to?(:dup).should == true
+      respond_to?(:button).should == true
     end
   end
   

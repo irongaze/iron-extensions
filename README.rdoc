@@ -40,6 +40,10 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 
     [:frog, :pig].to_hash {|n| n.to_s.capitalize} # => {:frog => 'Frog', :pig => 'Pig'}
     [:frog, :pig].to_hash(nil) # => {:frog => nil, :pig => nil}
+
+* Enumerable#delete_unless - equivalent to delete_if but with inverted test
+
+    [1,2,3,4,5].delete_unless(&:odd?) # => [1,3,5]
     
 * File.replace - atomic replacement of a file given a block to generate it
 

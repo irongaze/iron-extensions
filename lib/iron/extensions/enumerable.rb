@@ -10,4 +10,10 @@ module Enumerable
     hash
   end
   
+  # Inverse of delete_if, to be more Ruby-ish in cases where you want negated
+  # tests.
+  def delete_unless(&block)
+    delete_if {|*args| !block.call(*args)}
+  end
+  
 end
