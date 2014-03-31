@@ -5,7 +5,7 @@ module Enumerable
   def convert_to_hash(init_val = nil)
     hash = {}
     self.each do |key|
-      hash[key] = block_given? ? yield(key) : init_val
+      hash[key] = block_given? ? yield(key) : (init_val.dup rescue init_val)
     end
     hash
   end

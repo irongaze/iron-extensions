@@ -1,3 +1,7 @@
+== 1.1.5 / 2014-03-31
+
+* Fix bug in Enumerable#convert_to_hash where default values (eg hashes) weren't being duplicated
+
 == 1.1.4 / 2014-01-14
 
 * Add Enumerable#delete_unless

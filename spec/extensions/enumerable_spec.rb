@@ -9,6 +9,12 @@ describe Enumerable do
     [:a, :b].convert_to_hash(false).should == {:a => false, :b => false}
   end
   
+  it 'should duplicate default hash values' do
+    h = [1,2,3].convert_to_hash({})
+    h[1][:foo] = 5
+    h[2][:foo].should be_nil
+  end
+  
   it 'should accept a block to set hash values' do
     [:a, :b, :c].convert_to_hash {|k| k.to_s.upcase}.should == {:a => 'A', :b => 'B', :c => 'C'}
   end
