@@ -7,4 +7,8 @@ describe Object do
     :b.in?([:a, :b, :c]).should == true
   end
 
+  it 'should not be blank' do
+    Object.new.should_not be_blank
+  end
+
 end

@@ -78,5 +78,11 @@ describe String do
   it 'should support natural ordering' do
     ['a0', 'a90', 'a10', 'a9'].sort_by {|a| a.natural_order}.should == ['a0', 'a9', 'a10', 'a90']
   end
+  
+  it 'should be appropriately blank' do
+    [nil, '', '  ', "\t", "\n"].each do |test|
+      test.should be_blank
+    end
+  end
 
 end

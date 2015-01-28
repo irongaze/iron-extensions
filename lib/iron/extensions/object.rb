@@ -5,4 +5,8 @@ class Object
     enum.include?(self)
   end
   
+  def blank?
+    false
+  end
+  
 end

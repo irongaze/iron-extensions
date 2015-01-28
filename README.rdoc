@@ -4,7 +4,9 @@ Written by Rob Morris @ Irongaze Consulting LLC (http://irongaze.com)
 
 == DESCRIPTION
 
-Helpful extensions to core Ruby classes, plus a little sugar for common patterns
+Helpful extensions to core Ruby classes, plus a little sugar for common patterns.  For users of
+version 1.1.x and lower, please note that as of version 1.2.0 the DSL-specific extensions
+have been moved to the iron-dsl gem!
 
 == ADDED EXTENSIONS
 
@@ -12,48 +14,23 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 
     [1, 2, nil, '', 'count'].list_join # => '1, 2, count'
     
-* Class#dsl_accessor - helpful method for defining accessors on DSL builder-style classes
+* Enumerable#convert_to_hash - convert an array or other enumerable to a hash using a block or constant
 
-    class MyBuilder
-      dsl_accessor :name
-    end
-    builder = MyBuilder.new
-    builder.name 'ProjectX'
-    builder.name  # => 'ProjectX'
-    DslProxy.exec(builder) do
-      name 'Project Omega'
-    end
-    builder.name  # => 'Project Omega'
-    
-* Class#dsl_flag - same as above, but designed for boolean values
-
-    class AnotherBuilder
-      dsl_flag :awesome
-    end
-    
-    builder = AnotherBuilder
-    builder.awesome?  # => false on uninitialized value
-    builder.awesome!  # => sets @awesome to true
-    builder.awesome true  # ditto, same style as dsl_accessor above
-
-* Enumerable#to_hash - convert an array or other enumerable to a hash using a block or constant
-
-    [:frog, :pig].to_hash {|n| n.to_s.capitalize} # => {:frog => 'Frog', :pig => 'Pig'}
-    [:frog, :pig].to_hash(nil) # => {:frog => nil, :pig => nil}
+    [:frog, :pig].convert_to_hash {|n| n.to_s.capitalize} # => {:frog => 'Frog', :pig => 'Pig'}
+    [:frog, :pig].convert_to_hash(nil) # => {:frog => nil, :pig => nil}
 
 * Enumerable#delete_unless - equivalent to delete_if but with inverted test
 
     [1,2,3,4,5].delete_unless(&:odd?) # => [1,3,5]
     
-* File.replace - atomic replacement of a file given a block to generate it
+* File.safe_replace - atomic replacement of a file given a block to generate it
 
     # Defers deleting old file until block completes successfully (ie no exceptions), then
     # moves the new file into the old file's location
-    File.replace('./config') do |file|
+    File.safe_replace('./config') do |file|
       file.write("PRODUCTION: true")
     end
     
-* Fixnum#blank? - always false
 * Fixnum#to_human_size - size to MB/GB/whatever, adapted from Rails
 
     123456.to_human_size # => "120.5 KB"
@@ -75,7 +52,7 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
     
 * Nil#blank? - always true
 
-* Numeric#to_display - pretty display of numbers with options for number of decimal places and inclusion of thousands separator
+* Numeric#to_display - pretty display of numbers with options for number of decimal places and inclusion of thousands separator (US-only, sorry!)
 
     5000.to_display          # => 5,000
     100.to_display(2)        # => 100.00
@@ -97,8 +74,8 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 * Regexp::IP_ADDRESS, Regexp::EMAIL_ADDRESS, Regexp::DOMAIN - commonly useful regexen
 
 * String#blank? - true if empty?
-* String#append / String#prepend - this should be in Ruby core
-* String#to_date - "better" date parser than Date.parse
+* String#append / String#prepend - these should be in Ruby core
+* String#to_date - "better" date parser than Date.parse (US-centric)
 * String#to_dashcase - perfect for permalinks!
 * String#smart_truncate - truncate honoring word boundaries
 * String#integer? - true when string represents an integer
@@ -109,22 +86,6 @@ Helpful extensions to core Ruby classes, plus a little sugar for common patterns
 
 * Symbol#blank? - always false
 * Symbol#to_dashcase - same as for String
-
-== ADDED CLASSES/MODULES
-
-* DslProxy - a cool and sexy way to make powerful DSLs (domain-specific languages) look easy - see the docs for details
-
-    # DslProxy makes this code possible:
-    @items = ['one', 'two']
-    Console.out do
-      # No explicit receiver for DSL method calls
-      p 'Item List'
-      hr
-      indent do
-        # Even nested, local variables are still available
-        @items.each {|item| p item }
-      end
-    end
 
 == SYNOPSIS
 

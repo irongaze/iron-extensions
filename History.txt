@@ -1,3 +1,10 @@
+== 1.2.0 / 2015-01-27
+
+* BREAKING CHANGE: removed DslProxy/DslBuilder and the dsl_* accessor helpers and moved them into the iron-dsl gem
+* BREAKING CHANGE: removed deprecated Array#rand and Array#rand! - use #shuffle instead
+* Improved blank? to work on strings containing only whitespace
+* Improved documentation & specs a bit
+
 == 1.1.5 / 2014-03-31
 
 * Fix bug in Enumerable#convert_to_hash where default values (eg hashes) weren't being duplicated

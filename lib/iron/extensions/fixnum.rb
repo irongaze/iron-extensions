@@ -21,8 +21,4 @@ class Fixnum
     nil
   end
   
-  def blank?
-    false
-  end
-  
 end

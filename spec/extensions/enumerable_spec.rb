@@ -31,4 +31,11 @@ describe Enumerable do
     h.should == {:c => 12}
   end
 
+  it 'should be appropriately empty' do
+    [].blank?.should be_true
+    {}.blank?.should be_true
+    [1].blank?.should be_false
+    {:a => 2}.blank?.should be_false
+  end
+
 end

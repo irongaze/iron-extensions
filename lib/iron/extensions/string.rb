@@ -4,7 +4,7 @@ class String
 
   # Provide helper for nil/"" blankness checker
   def blank?
-    empty?
+    self.strip.empty?
   end
 
   def prepend(str)
