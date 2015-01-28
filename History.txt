@@ -1,3 +1,7 @@
+== 1.2.1 / 2015-01-27
+
+* Instant revert - move Enumerable#blank? to Array#blank? and Hash#blank? as enumerables don't support #empty?, #count, etc.
+
 == 1.2.0 / 2015-01-27
 
 * BREAKING CHANGE: removed DslProxy/DslBuilder and the dsl_* accessor helpers and moved them into the iron-dsl gem

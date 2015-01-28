@@ -16,8 +16,4 @@ module Enumerable
     delete_if {|*args| !block.call(*args)}
   end
   
-  def blank?
-    empty?
-  end
-  
 end

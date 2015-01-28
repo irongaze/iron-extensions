@@ -4,5 +4,9 @@ class Array
   def list_join(sep = ', ')
     self.select{|e| !e.blank?}.join(sep)
   end
+
+  def blank?
+    empty?
+  end
   
 end
