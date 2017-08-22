@@ -5,7 +5,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'iron', 
 RSpec.configure do |config|
   config.color = true
   config.add_formatter 'documentation'
-  config.backtrace_clean_patterns = [/rspec/]
+  config.backtrace_exclusion_patterns = [/rspec/]
 end
 
 

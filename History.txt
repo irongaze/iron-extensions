@@ -1,13 +1,17 @@
+== 1.2.2 / 2017-08-22
+
+* Add Class#inspect_only to allow limiting the vars displayed, support methods as well as instance vars
+
 == 1.2.1 / 2015-01-27
 
 * Instant revert - move Enumerable#blank? to Array#blank? and Hash#blank? as enumerables don't support #empty?, #count, etc.
 
 == 1.2.0 / 2015-01-27
 
-* BREAKING CHANGE: removed DslProxy/DslBuilder and the dsl_* accessor helpers and moved them into the iron-dsl gem
-* BREAKING CHANGE: removed deprecated Array#rand and Array#rand! - use #shuffle instead
-* Improved blank? to work on strings containing only whitespace
-* Improved documentation & specs a bit
+* BREAKING CHANGE: Remove DslProxy/DslBuilder and the dsl_* accessor helpers and move them into the iron-dsl gem
+* BREAKING CHANGE: Remove deprecated Array#rand and Array#rand! - use #shuffle instead
+* Improve #blank? to work on strings containing only whitespace
+* Improve documentation & specs
 
 == 1.1.5 / 2014-03-31
 
@@ -33,26 +37,26 @@
 
 == 1.1.1 / 2012-03-13
 
-* Added DslBuilder base class for additional DSL-building goodness, is basically a better blank-slate starter class than BasicObject for working with our DslProxy class
-* Added dsl_accessor class method as a way to easily create DSL-style accessors
-* DslProxy now only copies back instance vars when they change
-* Symbol now supports #starts_with? and #ends_with?
+* Add DslBuilder base class for additional DSL-building goodness, is basically a better blank-slate starter class than BasicObject for working with our DslProxy class
+* Add #dsl_accessor class method as a way to easily create DSL-style accessors
+* Improve DslProxy to only copy back instance vars when they change
+* Add #starts_with? and #ends_with? to Symbol
 
 == 1.1.0 / 2012-03-06
 
-* Added DslProxy class and specs, which enables slim and sexy DSL construction
+* Add DslProxy class and specs, which enables slim and sexy DSL construction
 
 == 1.0.1 / 2012-03-03
 
-* Updated docs, fixed up minor packaging issues
-* Added spec coverage for Kernel extensions
-* Added spec coverage for Numeric extensions
-* Added spec coverage for Symbol extensions
+* Update docs, fixed up minor packaging issues
+* Add spec coverage for Kernel extensions
+* Add spec coverage for Numeric extensions
+* Add spec coverage for Symbol extensions
 * Commit to GitHub, update gem homepage to reflect same
 
 == 1.0.0 / 2012-03-02
 
-* Broke out extensions from older irongaze gem
-* Vastly improved README with listing of extensions added
-* Improved spec coverage
-* Integrated several new extensions
+* Break out extensions from older irongaze gem
+* Integrate several new extensions
+* Improve README with listing of extensions added
+* Improve spec coverage

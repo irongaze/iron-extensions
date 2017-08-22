@@ -23,6 +23,26 @@ have been moved to the iron-dsl gem!
 
     [1,2,3,4,5].delete_unless(&:odd?) # => [1,3,5]
     
+* Class#inspect_only - override #inspect to only show the specified variables or methods
+
+    class User
+      # Limit inspect to these attrs
+      inspect_only :name, :admin?
+      
+      def initialize
+        @name = 'Bob'
+        @password = 'topSECRET!'
+        @something_complex = ValidationEngine.new
+      end
+      
+      def admin?
+        @name == 'Admin'
+      end
+    end
+    
+    # Inspecting instances of this class show only what we need
+    User.new.inspect  # => "<User:1892377440 @name='Bob', :admin?=false>"
+    
 * File.safe_replace - atomic replacement of a file given a block to generate it
 
     # Defers deleting old file until block completes successfully (ie no exceptions), then
@@ -91,7 +111,7 @@ have been moved to the iron-dsl gem!
 
 To use:
 
-    require 'iron/extensions'
+    require 'iron-extensions'
     
 After that, simply write code to make use of the new extensions and helper classes.
 
@@ -108,7 +128,3 @@ To install, simply run:
 RVM users should drop the 'sudo':
 
     gem install iron-extensions
-    
-Then simply require the library:
-
-    require 'iron/extensions'
